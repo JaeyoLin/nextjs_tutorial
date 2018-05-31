@@ -1,18 +1,21 @@
-import React from 'react'
-import Router from 'next/router'
+import React from 'react';
+// import Router from 'next/router';
+import Link from 'next/link';
+// import 'isomorphic-unfetch';
 
+import Header from '../components/Header/Header';
+import App from '../containers/App/App';
 export default class MyLink extends React.Component {
-  componentDidMount() {
-    Router.prefetch('/dynamic')
+  static async getInitialProps() {
+    return {};
   }
-  
+
   render() {
     return (
-       <div>
-        <a onClick={() => setTimeout(() => url.pushTo('/dynamic'), 100)}>
-          A route transition will happen after 100ms
-        </a>
-      </div>   
-    )
+      <div>
+        <Header />
+        <App />
+      </div>
+    );
   }
 }

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "next",
+    "dev": "next -p 8000",
     "build": "next build",
     "start": "next start"
   },
@@ -20,9 +20,14 @@
   },
   "homepage": "https://github.com/JaeyoLin/nextjs_tutorial#readme",
   "dependencies": {
-    "isomorphic-unfetch": "^2.0.0",
+    "@material-ui/icons": "^1.1.0",
     "next": "^6.0.3",
+    "node-fetch": "^2.1.2",
     "react": "^16.4.0",
     "react-dom": "^16.4.0"
+  },
+  "devDependencies": {
+    "@material-ui/core": "^1.1.0",
+    "isomorphic-unfetch": "^2.0.0"
   }
 }
