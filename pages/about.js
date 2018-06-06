@@ -1,21 +1,21 @@
 import React from 'react';
-// import Router from 'next/router';
-import Link from 'next/link';
-// import 'isomorphic-unfetch';
 
 import Header from '../components/Header/Header';
 import About from '../containers/About/About';
 
-export default class MyLink extends React.Component {
+import getAbout from '../API/getAbout';
+
+export default class extends React.Component {
   static async getInitialProps() {
-    return {};
+    const json = await getAbout();
+    return { data: json.data };
   }
 
   render() {
     return (
       <div>
         <Header />
-        <About />
+        <About data={this.props.data} />
       </div>
     );
   }
