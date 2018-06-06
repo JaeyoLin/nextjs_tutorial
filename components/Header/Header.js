@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Router from 'next/router';
+import Head from 'next/head';
 
 import React from 'react';
 import PropTypes from 'prop-types';
@@ -49,9 +50,7 @@ class Header extends React.Component {
 
   handleClickMenu = url => {
     this.handleClose();
-    Router.push({
-      pathname: `/${url}`
-    });
+    Router.push(`/${url}`);
   };
 
   render() {
@@ -60,82 +59,97 @@ class Header extends React.Component {
     const open = Boolean(anchorEl);
 
     return (
-      <div className={classes.root}>
-        <FormGroup>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={auth}
-                onChange={this.handleChange}
-                aria-label="LoginSwitch"
-              />
-            }
-            label={auth ? 'Logout' : 'Login'}
+      <div>
+        <Head>
+          <title>My page title</title>
+          <link
+            rel="shortcut icon"
+            type="image/x-icon"
+            href="http://localhost:8000/static/favicon.ico"
           />
-        </FormGroup>
-        <AppBar position="static">
-          <Toolbar>
-            <IconButton
-              className={classes.menuButton}
-              color="inherit"
-              aria-label="Menu"
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography
-              variant="title"
-              color="inherit"
-              className={classes.flex}
-            >
-              Title
-            </Typography>
-            {auth && (
-              <div>
-                <IconButton
-                  aria-owns={open ? 'menu-appbar' : null}
-                  aria-haspopup="true"
-                  onClick={this.handleMenu}
-                  color="inherit"
-                >
-                  <AccountCircle />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorEl}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right'
-                  }}
-                  transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right'
-                  }}
-                  open={open}
-                  onClose={this.handleClose}
-                >
-                  <MenuItem onClick={() => this.handleClickMenu('')}>
-                    Home
-                  </MenuItem>
-
-                  <MenuItem onClick={() => this.handleClickMenu('about')}>
-                    About
-                  </MenuItem>
-
-                  <MenuItem
-                    onClick={() => this.handleClickMenu('canvasManagement')}
+          <meta
+            name="viewport"
+            content="initial-scale=1.0, width=device-width"
+            key="viewport"
+          />
+        </Head>
+        <div className={classes.root}>
+          <FormGroup>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={auth}
+                  onChange={this.handleChange}
+                  aria-label="LoginSwitch"
+                />
+              }
+              label={auth ? 'Logout' : 'Login'}
+            />
+          </FormGroup>
+          <AppBar position="static">
+            <Toolbar>
+              <IconButton
+                className={classes.menuButton}
+                color="inherit"
+                aria-label="Menu"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography
+                variant="title"
+                color="inherit"
+                className={classes.flex}
+              >
+                Title
+              </Typography>
+              {auth && (
+                <div>
+                  <IconButton
+                    aria-owns={open ? 'menu-appbar' : null}
+                    aria-haspopup="true"
+                    onClick={this.handleMenu}
+                    color="inherit"
                   >
-                    Canvas Management
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => this.handleClickMenu('canvasManagement1')}
+                    <AccountCircle />
+                  </IconButton>
+                  <Menu
+                    id="menu-appbar"
+                    anchorEl={anchorEl}
+                    anchorOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right'
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'right'
+                    }}
+                    open={open}
+                    onClose={this.handleClose}
                   >
-                    Canvas Management 1
-                  </MenuItem>
-                </Menu>
-              </div>
-            )}
-          </Toolbar>
-        </AppBar>
+                    <MenuItem onClick={() => this.handleClickMenu('')}>
+                      Home
+                    </MenuItem>
+
+                    <MenuItem onClick={() => this.handleClickMenu('about')}>
+                      About
+                    </MenuItem>
+
+                    <MenuItem
+                      onClick={() => this.handleClickMenu('canvasManagement')}
+                    >
+                      Canvas Management
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => this.handleClickMenu('canvasManagement1')}
+                    >
+                      Canvas Management 1
+                    </MenuItem>
+                  </Menu>
+                </div>
+              )}
+            </Toolbar>
+          </AppBar>
+        </div>
       </div>
     );
   }

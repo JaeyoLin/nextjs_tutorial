@@ -19,9 +19,20 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
+import styled from 'styled-components';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 
+import API from '../../utility/API';
 import fetch from 'node-fetch';
+
+const Img = styled.img`
+  cursor: pointer;
+  margin: 10px auto;
+  border: 1px solid ${props => props.theme.bg_gray};
+  display: block;
+  width: auto;
+  height: 100%;
+`;
 
 let counter = 0;
 function createData(name, calories, fat, carbs, protein) {
@@ -31,23 +42,29 @@ function createData(name, calories, fat, carbs, protein) {
 
 const columnData = [
   {
+    id: 'thumbnail',
+    numeric: false,
+    disablePadding: false,
+    label: 'thumbnail'
+  },
+  {
     id: 'content_id',
     numeric: false,
     disablePadding: true,
-    label: 'Dessert (100g serving)'
+    label: 'Content ID'
   },
   {
     id: 'content_name',
     numeric: true,
     disablePadding: false,
-    label: 'Calories'
+    label: 'Name'
   },
-  { id: 'file_type', numeric: true, disablePadding: false, label: 'Fat (g)' },
+  { id: 'file_type', numeric: true, disablePadding: false, label: 'Type' },
   {
     id: 'update_time',
     numeric: true,
     disablePadding: false,
-    label: 'Carbs (g)'
+    label: 'Last Update'
   }
 ];
 
@@ -205,7 +222,7 @@ class EnhancedTable extends React.Component {
 
     let list = [];
     if (this.props.data) {
-      list = this.props.data.data;
+      list = this.props.data;
     }
 
     this.state = {
@@ -275,25 +292,28 @@ class EnhancedTable extends React.Component {
 
   componentDidMount = async () => {
     if (this.state.data.length === 0) {
-      const url = 'http://localhost:3000/web/';
-      const headers = {
-        'Content-Type': 'application/json',
-        Authorization:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ3ZWJfdXNlcl9pZCI6MTg4LCJjb21wYW55X2lkIjoxLCJ3b3Jrc3BhY2VfaWQiOjEsInJlbnRfdG8iOiIyMDE5LTAxLTAxVDAwOjAwOjAwLjAwMFoiLCJjb21wYW55X3Jvb3QiOmZhbHNlLCJpYXQiOjE1Mjc3MjkwMzF9.PLuoDFQaNLPblCUmFPoNvTqvp1-IiTkP92DIWdU1C-k'
-      };
+      const response = await API.getContentList();
 
-      const res = await fetch(`${url}content/getContent`, {
-        method: 'POST',
-        body: JSON.stringify({
-          query: { content_type: 'I', file_type: '' },
-          pagination: { current_page: 1, page_size: 10, total_number: 0 },
-          sorter: { sort_field: 'update_time', sort_type: 'desc' }
-        }),
-        headers
-      });
-      const json = await res.json();
       this.setState({
-        data: json.data
+        data: response.data
+      });
+
+      const contentThumbnails = await API.getThumbnailInIds({
+        contentIds: response.data.map(content => content.content_id)
+      });
+
+      const contentThumbnailObj = contentThumbnails.reduce(
+        (obj, content) => ({ ...obj, [content.content_id]: content.thumbnail }),
+        {}
+      );
+
+      const data = response.data.map(content => ({
+        ...content,
+        thumbnail: contentThumbnailObj[content.content_id]
+      }));
+
+      this.setState({
+        data
       });
     }
   };
@@ -340,13 +360,19 @@ class EnhancedTable extends React.Component {
                       <TableCell padding="checkbox">
                         <Checkbox checked={isSelected} />
                       </TableCell>
+                      <TableCell numeric>
+                        {!n.thumbnail ? (
+                          <LinearProgress />
+                        ) : (
+                          <Img src={n.thumbnail} height="120" width="150" />
+                        )}
+                      </TableCell>
+                      <TableCell numeric>{n.content_id}</TableCell>
                       <TableCell component="th" scope="row" padding="none">
                         {n.content_name}
                       </TableCell>
-                      <TableCell numeric>{n.calories}</TableCell>
-                      <TableCell numeric>{n.fat}</TableCell>
-                      <TableCell numeric>{n.carbs}</TableCell>
-                      <TableCell numeric>{n.protein}</TableCell>
+                      <TableCell numeric>{n.file_type}</TableCell>
+                      <TableCell numeric>{n.update_time}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -381,7 +407,7 @@ class EnhancedTable extends React.Component {
 
 EnhancedTable.propTypes = {
   classes: PropTypes.object.isRequired,
-  data: PropTypes.object.isRequired
+  data: PropTypes.array.isRequired
 };
 
 export default withStyles(styles)(EnhancedTable);

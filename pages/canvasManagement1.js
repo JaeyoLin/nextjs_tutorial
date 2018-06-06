@@ -7,7 +7,7 @@ import CanvasManagement from '../containers/CanvasManagement/CanvasManagement';
 const canvasManagement1 = () => (
   <div>
     <Header />
-    <CanvasManagement data={{ data: [] }} />
+    <CanvasManagement data={[]} />
   </div>
 );
 
